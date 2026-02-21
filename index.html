@@ -12,17 +12,15 @@
 
         body { 
             font-family: -apple-system, Arial, sans-serif; 
-            /* Hình nền kết hợp banner Tết và màu đỏ đô sang trọng */
-            background: linear-gradient(rgba(75, 0, 0, 0.6), rgba(75, 0, 0, 0.6)), 
-                        url('image_6a26ff.png');
+            /* Sử dụng hình ảnh bạn cung cấp làm hình nền chính */
+            background: url('image_d17cc7.png') no-repeat center center fixed;
             background-size: cover;
-            background-position: center;
             margin: 0; display: flex; flex-direction: column; align-items: center; 
             justify-content: center; height: 100vh; color: white; overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Hiệu ứng Đèn lồng đung đưa */
+        /* Đèn lồng đung đưa */
         .lantern {
             position: fixed; top: -10px; font-size: 45px; z-index: 3;
             animation: swing 3s ease-in-out infinite alternate;
@@ -37,7 +35,7 @@
             100% { transform: rotate(10deg); }
         }
 
-        /* Hiệu ứng Hoa đào rơi */
+        /* Cánh hoa đào rơi */
         .petal {
             position: fixed; background-color: var(--petal); border-radius: 150% 0 150% 0;
             opacity: 0.8; pointer-events: none; z-index: 1; 
@@ -73,7 +71,6 @@
             background: linear-gradient(to bottom, #ff4d4d, #b30000); color: var(--gold); 
             border: 2px solid var(--gold); border-radius: 50px;
             box-shadow: 0 8px 0 #660000; outline: none; -webkit-appearance: none; z-index: 4;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
         button#spinBtn:active { transform: translateY(4px); box-shadow: 0 4px 0 #660000; }
         button#spinBtn:disabled { background: #444; border-color: #666; box-shadow: 0 4px 0 #222; color: #999; }
@@ -90,7 +87,7 @@
 <div class="lantern lantern-right">🧧</div>
 
 <div id="result-display">
-    <h2 style="margin:0; font-size: 1.2rem; color: #d40000;">🎊 CHÚC MỪNG NĂM MỚI 2026 🎊</h2>
+    <h2 style="margin:0; font-size: 1.2rem; color: #d40000;">🎊 CHÚC MỪNG NĂM MỚI 🎊</h2>
     <h1 id="prize-name">---</h1>
     <button onclick="closeModal()" style="font-size:1.1rem; padding:10px 25px; background:#d40000; color:white; border-radius:10px; border:none; font-weight:bold; cursor:pointer;">NHẬN LÌ XÌ</button>
 </div>
