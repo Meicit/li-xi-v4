@@ -108,4 +108,119 @@
     const canvas = document.getElementById('wheel');
     const ctx = canvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
-    const mainSound =
+    const mainSound = document.getElementById('mainSound');
+
+    const prizes = [
+        { label: "10.000đ", color: "#d40000" }, { label: "20.000đ", color: "#ffb703" },
+        { label: "10.000đ", color: "#b30000" }, { label: "50.000đ", color: "#e63946" },
+        { label: "10.000đ", color: "#d40000" }, { label: "20.000đ", color: "#ffb703" },
+        { label: "10.000đ", color: "#b30000" }, { label: "10.000đ", color: "#ff4d4d" }
+    ];
+
+    let inventory = { "50.000đ": 5, "20.000đ": 10 };
+    let currentRotation = 0;
+    let isSpinning = false;
+    let cheatMode = false;
+
+    function createPetal() {
+        const petal = document.createElement('div');
+        petal.className = 'petal';
+        const size = Math.random() * 8 + 5 + 'px';
+        petal.style.width = size;
+        petal.style.height = size;
+        petal.style.left = Math.random() * 100 + 'vw';
+        petal.style.animationDuration = Math.random() * 3 + 3 + 's';
+        petal.style.opacity = Math.random();
+        document.body.appendChild(petal);
+        setTimeout(() => petal.remove(), 6000);
+    }
+    setInterval(createPetal, 400);
+
+    function draw() {
+        const arc = (Math.PI * 2) / prizes.length;
+        ctx.clearRect(0, 0, 500, 500);
+        prizes.forEach((p, i) => {
+            const ang = currentRotation + i * arc;
+            ctx.beginPath();
+            ctx.fillStyle = p.color;
+            ctx.strokeStyle = "#ffd700";
+            ctx.lineWidth = 3;
+            ctx.moveTo(250, 250);
+            ctx.arc(250, 250, 245, ang, ang + arc);
+            ctx.fill(); ctx.stroke();
+            
+            ctx.save();
+            ctx.fillStyle = "#fff";
+            ctx.translate(250, 250);
+            ctx.rotate(ang + arc / 2);
+            ctx.font = "bold 20px Arial";
+            ctx.textAlign = "right";
+            ctx.fillText(p.label, 230, 10);
+            ctx.restore();
+        });
+        ctx.beginPath(); ctx.fillStyle = "#ffd700"; ctx.arc(250, 250, 18, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = "#b30000"; ctx.lineWidth = 2; ctx.stroke();
+    }
+
+    window.onload = draw;
+    setInterval(draw, 16);
+
+    document.body.addEventListener('touchstart', () => mainSound.load(), { once: true });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.code === "Space" && !isSpinning) spin();
+        if (e.code === "AltRight") {
+            cheatMode = true;
+            document.getElementById('mode-indicator').innerText = "Target: 50K";
+        }
+    });
+
+    spinBtn.onclick = spin;
+
+    function spin() {
+        if (isSpinning) return;
+        mainSound.pause(); mainSound.currentTime = 0;
+        mainSound.play().catch(e => console.log("Audio Blocked"));
+
+        isSpinning = true; spinBtn.disabled = true;
+
+        let targetIdx = Math.floor(Math.random() * prizes.length);
+        if (cheatMode && inventory["50.000đ"] > 0) { targetIdx = 3; cheatMode = false; }
+        if (inventory[prizes[targetIdx].label] === 0) targetIdx = 0;
+
+        const arc = (Math.PI * 2) / prizes.length;
+        const finalAngle = (prizes.length - targetIdx) * arc - arc/2 - (Math.PI/2);
+        const duration = 4600; 
+        const totalRot = (Math.PI * 2) * 12 + finalAngle;
+        let start = null;
+
+        function animate(now) {
+            if (!start) start = now;
+            let t = (now - start) / duration;
+            if (t > 1) t = 1;
+            currentRotation = (1 - Math.pow(1 - t, 4)) * totalRot;
+            if (t < 1) requestAnimationFrame(animate);
+            else {
+                if (mainSound.ended || mainSound.paused) showFinal(prizes[targetIdx].label);
+                else { mainSound.onended = () => showFinal(prizes[targetIdx].label); setTimeout(() => showFinal(prizes[targetIdx].label), 600); }
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    function showFinal(result) {
+        if (!isSpinning) return;
+        isSpinning = false;
+        document.getElementById('prize-name').innerText = result;
+        document.getElementById('result-display').style.display = 'block';
+        if (inventory[result] !== undefined) inventory[result]--;
+    }
+
+    function closeModal() {
+        document.getElementById('result-display').style.display = 'none';
+        spinBtn.disabled = false;
+        mainSound.onended = null;
+    }
+</script>
+</body>
+</html>
