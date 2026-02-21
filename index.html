@@ -6,36 +6,38 @@
     <title>Vòng Quay Tết May Mắn - ver.1</title>
     <style>
         :root { 
-            --primary: #e63946; 
-            --dark-red: #8b0000; 
             --gold: #ffd700; 
             --petal: #ffb7c5; 
         }
 
         body { 
             font-family: -apple-system, Arial, sans-serif; 
-            /* 1. Màu nền Đỏ đô với radial-gradient tạo chiều sâu */
-            background: radial-gradient(circle, #b22222 0%, #4b0000 100%);
+            /* Hình nền kết hợp banner Tết và màu đỏ đô sang trọng */
+            background: linear-gradient(rgba(75, 0, 0, 0.6), rgba(75, 0, 0, 0.6)), 
+                        url('image_6a26ff.png');
+            background-size: cover;
+            background-position: center;
             margin: 0; display: flex; flex-direction: column; align-items: center; 
             justify-content: center; height: 100vh; color: white; overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 2. Hiệu ứng Đèn lồng đung đưa */
+        /* Hiệu ứng Đèn lồng đung đưa */
         .lantern {
-            position: fixed; top: -10px; font-size: 40px; z-index: 3;
+            position: fixed; top: -10px; font-size: 45px; z-index: 3;
             animation: swing 3s ease-in-out infinite alternate;
             transform-origin: top center;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
         }
-        .lantern-left { left: 15%; }
-        .lantern-right { right: 15%; }
+        .lantern-left { left: 10%; }
+        .lantern-right { right: 10%; }
 
         @keyframes swing {
             0% { transform: rotate(-10deg); }
             100% { transform: rotate(10deg); }
         }
 
-        /* 3. Hiệu ứng Hoa đào rơi */
+        /* Hiệu ứng Hoa đào rơi */
         .petal {
             position: fixed; background-color: var(--petal); border-radius: 150% 0 150% 0;
             opacity: 0.8; pointer-events: none; z-index: 1; 
@@ -47,7 +49,7 @@
             100% { transform: translateY(110vh) rotate(360deg); }
         }
 
-        .version-tag { position: fixed; bottom: 10px; right: 10px; font-size: 10px; color: rgba(255, 255, 255, 0.4); z-index: 5; }
+        .version-tag { position: fixed; bottom: 10px; right: 10px; font-size: 10px; color: rgba(255, 255, 255, 0.5); z-index: 5; }
         
         .wheel-container { position: relative; margin-bottom: 30px; z-index: 2; }
         .pointer {
@@ -56,13 +58,13 @@
             clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; border: 2px solid var(--gold);
         }
 
-        canvas { border: 12px solid var(--gold); border-radius: 50%; background: #222; max-width: 85vw; max-height: 85vw; display: block; box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); }
+        canvas { border: 12px solid var(--gold); border-radius: 50%; background: #222; max-width: 85vw; max-height: 85vw; display: block; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
 
         #result-display {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: #fffdf0; color: #333; padding: 30px; border-radius: 20px;
             text-align: center; display: none; z-index: 100; border: 5px solid #ff0000; width: 75%;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            box-shadow: 0 0 100px rgba(0,0,0,0.8);
         }
         #result-display h1 { margin: 10px 0; font-size: 2.5rem; color: #d40000; }
         
@@ -71,6 +73,7 @@
             background: linear-gradient(to bottom, #ff4d4d, #b30000); color: var(--gold); 
             border: 2px solid var(--gold); border-radius: 50px;
             box-shadow: 0 8px 0 #660000; outline: none; -webkit-appearance: none; z-index: 4;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
         button#spinBtn:active { transform: translateY(4px); box-shadow: 0 4px 0 #660000; }
         button#spinBtn:disabled { background: #444; border-color: #666; box-shadow: 0 4px 0 #222; color: #999; }
@@ -87,9 +90,9 @@
 <div class="lantern lantern-right">🧧</div>
 
 <div id="result-display">
-    <h2 style="margin:0; font-size: 1.2rem; color: #d40000;">🧧 CHÚC MỪNG NĂM MỚI 🧧</h2>
+    <h2 style="margin:0; font-size: 1.2rem; color: #d40000;">🎊 CHÚC MỪNG NĂM MỚI 2026 🎊</h2>
     <h1 id="prize-name">---</h1>
-    <button onclick="closeModal()" style="font-size:1.1rem; padding:10px 25px; background:#d40000; color:white; border-radius:10px; border:none; font-weight:bold;">NHẬN LÌ XÌ</button>
+    <button onclick="closeModal()" style="font-size:1.1rem; padding:10px 25px; background:#d40000; color:white; border-radius:10px; border:none; font-weight:bold; cursor:pointer;">NHẬN LÌ XÌ</button>
 </div>
 
 <div class="wheel-container">
@@ -105,120 +108,4 @@
     const canvas = document.getElementById('wheel');
     const ctx = canvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
-    const mainSound = document.getElementById('mainSound');
-
-    const prizes = [
-        { label: "10.000đ", color: "#d40000" }, { label: "20.000đ", color: "#ffb703" },
-        { label: "10.000đ", color: "#b30000" }, { label: "50.000đ", color: "#e63946" },
-        { label: "10.000đ", color: "#d40000" }, { label: "20.000đ", color: "#ffb703" },
-        { label: "10.000đ", color: "#b30000" }, { label: "10.000đ", color: "#ff4d4d" }
-    ];
-
-    let inventory = { "50.000đ": 5, "20.000đ": 10 };
-    let currentRotation = 0;
-    let isSpinning = false;
-    let cheatMode = false;
-
-    // Script tạo Cánh hoa đào rơi
-    function createPetal() {
-        const petal = document.createElement('div');
-        petal.className = 'petal';
-        const size = Math.random() * 8 + 5 + 'px';
-        petal.style.width = size;
-        petal.style.height = size;
-        petal.style.left = Math.random() * 100 + 'vw';
-        petal.style.animationDuration = Math.random() * 3 + 3 + 's'; // Tốc độ rơi
-        petal.style.opacity = Math.random();
-        document.body.appendChild(petal);
-        setTimeout(() => petal.remove(), 6000);
-    }
-    setInterval(createPetal, 400); // Mật độ hoa rơi
-
-    function draw() {
-        const arc = (Math.PI * 2) / prizes.length;
-        ctx.clearRect(0, 0, 500, 500);
-        prizes.forEach((p, i) => {
-            const ang = currentRotation + i * arc;
-            ctx.beginPath();
-            ctx.fillStyle = p.color;
-            ctx.strokeStyle = "#ffd700";
-            ctx.lineWidth = 3;
-            ctx.moveTo(250, 250);
-            ctx.arc(250, 250, 245, ang, ang + arc);
-            ctx.fill(); ctx.stroke();
-            
-            ctx.save();
-            ctx.fillStyle = "#fff";
-            ctx.translate(250, 250);
-            ctx.rotate(ang + arc / 2);
-            ctx.font = "bold 22px Arial";
-            ctx.textAlign = "right";
-            ctx.fillText(p.label, 230, 10);
-            ctx.restore();
-        });
-        ctx.beginPath(); ctx.fillStyle = "#ffd700"; ctx.arc(250, 250, 18, 0, Math.PI*2); ctx.fill();
-        ctx.strokeStyle = "#b30000"; ctx.lineWidth = 2; ctx.stroke();
-    }
-
-    window.onload = draw;
-    setInterval(draw, 16);
-
-    document.body.addEventListener('touchstart', () => mainSound.load(), { once: true });
-
-    window.addEventListener('keydown', (e) => {
-        if (e.code === "Space" && !isSpinning) spin();
-        if (e.code === "AltRight") {
-            cheatMode = true;
-            document.getElementById('mode-indicator').innerText = "Target: 50K";
-        }
-    });
-
-    spinBtn.onclick = spin;
-
-    function spin() {
-        if (isSpinning) return;
-        mainSound.pause(); mainSound.currentTime = 0;
-        mainSound.play().catch(e => console.log("Audio Blocked"));
-
-        isSpinning = true; spinBtn.disabled = true;
-
-        let targetIdx = Math.floor(Math.random() * prizes.length);
-        if (cheatMode && inventory["50.000đ"] > 0) { targetIdx = 3; cheatMode = false; }
-        if (inventory[prizes[targetIdx].label] === 0) targetIdx = 0;
-
-        const arc = (Math.PI * 2) / prizes.length;
-        const finalAngle = (prizes.length - targetIdx) * arc - arc/2 - (Math.PI/2);
-        const duration = 4600; 
-        const totalRot = (Math.PI * 2) * 12 + finalAngle;
-        let start = null;
-
-        function animate(now) {
-            if (!start) start = now;
-            let t = (now - start) / duration;
-            if (t > 1) t = 1;
-            currentRotation = (1 - Math.pow(1 - t, 4)) * totalRot;
-            if (t < 1) requestAnimationFrame(animate);
-            else {
-                if (mainSound.ended || mainSound.paused) showFinal(prizes[targetIdx].label);
-                else { mainSound.onended = () => showFinal(prizes[targetIdx].label); setTimeout(() => showFinal(prizes[targetIdx].label), 600); }
-            }
-        }
-        requestAnimationFrame(animate);
-    }
-
-    function showFinal(result) {
-        if (!isSpinning) return;
-        isSpinning = false;
-        document.getElementById('prize-name').innerText = result;
-        document.getElementById('result-display').style.display = 'block';
-        if (inventory[result] !== undefined) inventory[result]--;
-    }
-
-    function closeModal() {
-        document.getElementById('result-display').style.display = 'none';
-        spinBtn.disabled = false;
-        mainSound.onended = null;
-    }
-</script>
-</body>
-</html>
+    const mainSound =
